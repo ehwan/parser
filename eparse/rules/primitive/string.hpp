@@ -11,17 +11,28 @@
 
 namespace ep { namespace rules { namespace primitive {
 
-template < typename CharT >
+template < typename CharT , typename Compare >
 class String
-  : public core::expression< String<CharT> >
+  : public core::expression< String<CharT,Compare> >
 {
 protected:
   std::basic_string<CharT> string_;
+  Compare compare_;
 
 public:
-  String( std::basic_string<CharT> string )
-    : string_( std::move( string ) )
+  String( std::basic_string<CharT> string , Compare compare )
+    : string_( std::move( string ) ) ,
+      compare_( std::move(compare) )
   {
+  }
+
+  Compare& compare_function()
+  {
+    return compare_;
+  }
+  Compare const& compare_function() const
+  {
+    return compare_;
   }
   
   template < typename I >
@@ -38,7 +49,7 @@ public:
   bool parse( I& begin , I const& end , core::nothing_t ) const
   {
     I begin_ = begin;
-    if( support::string_match( begin , end , string_.begin() , string_.end() , string_.size() ) )
+    if( support::string_match( begin , end , string_.begin() , string_.end() , string_.size() , compare_ ) )
     {
       return true;
     }
@@ -51,25 +62,36 @@ public:
 
 namespace ep {
 
-template < typename CharT >
-rules::primitive::String<CharT>
-string( std::basic_string<CharT> str )
+template < typename CharT , typename Compare >
+rules::primitive::String<CharT,Compare>
+string( std::basic_string<CharT> str , Compare cmp )
 {
-  return { std::move( str ) };
+  return { std::move( str ) , std::move(cmp) };
+}
+template < typename CharT , typename Compare >
+rules::primitive::String<CharT,Compare>
+string( CharT const* cstr , Compare cmp )
+{
+  return string( std::basic_string<CharT>{ cstr } , std::move(cmp) );
+}
+
+template < typename CharT >
+auto string( std::basic_string<CharT> str )
+{
+  return string( std::move(str) , std::equal_to<CharT>() );
 }
 template < typename CharT >
-rules::primitive::String<CharT>
-string( CharT const* cstr )
+auto string( CharT const* cstr )
 {
-  return string( std::basic_string<CharT>{ cstr } );
+  return string( cstr , std::equal_to<CharT>() );
 }
 
 }
 
 namespace ep { namespace traits {
 
-template < typename CharT , typename I >
-struct attribute_of< rules::primitive::String<CharT> , I >
+template < typename CharT , typename Compare , typename I >
+struct attribute_of< rules::primitive::String<CharT,Compare> , I >
 {
   using type = core::unused_type;
 };
