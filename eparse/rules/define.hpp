@@ -40,6 +40,13 @@ namespace support {
   };
 }
 
+constexpr auto xdigit = or_( digit ,
+    action( 
+      or_( range<unsigned int>('a','f') , range<unsigned int>('A','F') ) ,
+      support::add_t(10u)
+    )
+);
+
 template < typename Start , typename End >
 constexpr auto
 quoted( Start&& start , End const& end )

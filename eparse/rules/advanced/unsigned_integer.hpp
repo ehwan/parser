@@ -84,6 +84,7 @@ unsigned_integer( DigitParser&& digitparser , unsigned int base=10 )
   return { static_cast< DigitParser&& >( digitparser ) , base };
 }
 constexpr auto uint = unsigned_integer( digit );
+constexpr auto uint16 = unsigned_integer( xdigit , 16 );
 
 }
 
