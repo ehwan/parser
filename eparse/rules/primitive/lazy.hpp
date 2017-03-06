@@ -62,39 +62,6 @@ public:
     return parser().parse( begin , end , skipper );
   }
 
-  template < typename ... Ts >
-  class LazyOperator
-  {
-  protected:
-    Functor functor_;
-    std::tuple< Ts... > data_;
-  public:
-    template < typename F , typename ... Ts_ >
-    constexpr LazyOperator( F&& f , Ts_&& ... args )
-      : functor_( static_cast< F&& >( f ) ) ,
-        data_( static_cast< Ts_&& >( args )... )
-    {
-    }
-
-    template < size_t ... Ids >
-    constexpr decltype(auto) tuple_unpack( std::index_sequence< Ids... > ) const
-    {
-      return functor_()( std::get<Ids>( data_ )... );
-    }
-    constexpr decltype(auto) operator ()() const
-    {
-      return tuple_unapck( std::make_index_sequence< sizeof...( Ts ) >() );
-    }
-  };
-
-  template < typename ... Ts >
-  constexpr auto
-  operator()( Ts&& ... args ) const&;
-
-  template < typename ... Ts >
-  constexpr auto
-  operator()( Ts&& ... args ) &&;
-
 };
 
 }}}
@@ -109,25 +76,6 @@ lazy( Functor functor )
 }
 
 }
-
-namespace ep { namespace rules { namespace primitive {
-
-template < typename F >
-template < typename ... Ts >
-constexpr auto
-Lazy<F>::operator()( Ts&& ... args ) const&
-{
-  return lazy( Lazy<F>::LazyOperator< std::decay_t<Ts>... >{ functor_ , static_cast< Ts&& >( args )... } );
-}
-template < typename F >
-template < typename ... Ts >
-constexpr auto
-Lazy<F>::operator()( Ts&& ... args ) &&
-{
-  return lazy( Lazy<F>::LazyOperator< std::decay_t<Ts>... >{ std::move( functor_ ) , static_cast< Ts&& >( args )... } );
-}
-
-}}}
 
 namespace ep { namespace traits {
 

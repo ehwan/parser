@@ -38,36 +38,16 @@ namespace support {
       return x + data_;
     }
   };
-  template < unsigned int Max ,
-           typename = std::integral_constant<bool , (Max>10)> >
-  struct digit_select_t;
-
-  template < unsigned int Max >
-  struct digit_select_t< Max , std::true_type >
-  {
-    constexpr static auto value = or_( 
-        digit ,
-        action( alpha(Max-10) , add_t(10) )
-    );
-  };
-  template < unsigned int Max >
-  struct digit_select_t< Max , std::false_type >
-  {
-    constexpr static auto value = digit( Max );
-  };
 }
-
-template < unsigned int Max >
-constexpr auto digit_ = support::digit_select_t< Max >::value;
 
 template < typename Start , typename End >
 constexpr auto
-quoted( Start&& start , End&& end )
+quoted( Start&& start , End const& end )
 {
   return sequence<false>(
       static_cast<Start&&>(start) ,
-      capture( star( except( any , static_cast<End&&>(end) ) ) ) ,
-      static_cast<End&&>(end)
+      capture( star( except(any , end) ) ) ,
+      end
   );
 }
 

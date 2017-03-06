@@ -42,10 +42,6 @@ public:
   {
     return ret_;
   }
-  constexpr Always operator ()( bool always ) const
-  {
-    return { always };
-  }
 };
 
 }}}

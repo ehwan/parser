@@ -69,9 +69,6 @@ public:
     }
     return false;
   }
-
-  template < typename ... Ts >
-  constexpr auto operator ()( Ts&& ... args ) const;
 };
 
 }}}
@@ -102,19 +99,6 @@ or_( A&& a , B&& b , C&& c , Ds&& ... ds )
 }
 
 }
-
-namespace ep { namespace rules { namespace shell {
-
-template < typename A , typename B >
-template < typename ... Ts >
-constexpr auto 
-Or<A,B>::operator ()( Ts&& ... args ) const
-{
-  return or_( a_( static_cast<Ts&&>( args )... ) ,
-              b_( static_cast<Ts&&>( args )... ) );
-}
-
-}}}
 
 namespace ep { namespace traits {
 

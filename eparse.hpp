@@ -17,6 +17,7 @@
 #include "eparse/rules/primitive/string.hpp"
 #include "eparse/rules/primitive/lazy.hpp"
 #include "eparse/rules/primitive/string_tree.hpp"
+#include "eparse/rules/primitive/custom.hpp"
 
 #include "eparse/rules/shell/action.hpp"
 #include "eparse/rules/shell/repeat.hpp"
@@ -43,6 +44,7 @@
 #include "eparse/rules/advanced/signature.hpp"
 #include "eparse/rules/advanced/unsigned_floating.hpp"
 #include "eparse/rules/advanced/signed.hpp"
+//#include "eparse/rules/advanced/escape.hpp"
 
 namespace ep {
 

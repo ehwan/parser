@@ -56,9 +56,6 @@ public:
     }
     throw_exception( begin , end );
   }
-
-  template < typename ... Ts >
-  constexpr auto operator ()( Ts&& ... args ) const;
 };
 
 }}}
@@ -73,18 +70,6 @@ bad( P&& parser )
 }
 
 }
-
-namespace ep { namespace rules { namespace shell {
-
-template < typename P >
-template < typename ... Ts >
-constexpr auto 
-Bad<P>::operator ()( Ts&& ... args ) const
-{
-  return bad( parser_( static_cast<Ts&&>( args )... ) );
-}
-
-}}}
 
 namespace ep { namespace traits {
 

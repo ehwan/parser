@@ -44,9 +44,6 @@ public:
   {
     return parser().parse( begin , end , skipper );
   }
-
-  template < typename ... Ts >
-  constexpr auto operator ()( Ts&& ... args ) const;
 };
 
 }}}
@@ -61,18 +58,6 @@ capture( P&& parser )
 }
 
 }
-
-namespace ep { namespace rules { namespace shell {
-
-template < typename P >
-template < typename ... Ts >
-constexpr auto 
-Capture<P>::operator ()( Ts&& ... args ) const
-{
-  return capture( parser_( static_cast<Ts&&>( args )... ) );
-}
-
-}}}
 
 namespace ep { namespace traits {
 

@@ -63,9 +63,6 @@ public:
   {
     return parser().parse( begin , end , skipper );
   }
-
-  template < typename ... Ts >
-  constexpr auto operator ()( Ts&& ... args ) const;
 };
 
 }}}
@@ -80,18 +77,6 @@ debug( P&& parser )
 }
 
 }
-
-namespace ep { namespace rules { namespace shell {
-
-template < typename P >
-template < typename ... Ts >
-constexpr auto 
-Debug<P>::operator ()( Ts&& ... args ) const
-{
-  return debug( parser_( static_cast<Ts&&>( args )... ) );
-}
-
-}}}
 
 namespace ep { namespace traits {
 

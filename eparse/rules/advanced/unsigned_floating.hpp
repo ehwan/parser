@@ -1,6 +1,5 @@
 #pragma once
 
-#include "unsigned_floating_fwd.hpp"
 #include "fraction.hpp"
 #include "unsigned_integer.hpp"
 #include "../../core/expression.hpp"
@@ -13,18 +12,22 @@
 
 namespace ep { namespace rules { namespace advanced {
 
-template < unsigned int Base , typename T , typename Parser >
+template < typename T , typename Parser , typename DotParser >
 class UnsignedFloating
-  : public core::expression< UnsignedFloating<Base,T,Parser> >
+  : public core::expression< UnsignedFloating<T,Parser,DotParser> >
 {
 protected:
   Parser parser_;
+  DotParser dotparser_;
   bool need_dot_;
+  unsigned int base_;
 
 public:
-  constexpr UnsignedFloating( Parser parser , bool need_dot )
+  constexpr UnsignedFloating( Parser parser , DotParser dparser , bool need_dot , unsigned int base )
     : parser_( std::move(parser) ) ,
-      need_dot_( need_dot )
+      dotparser_( std::move(dparser) ) ,
+      need_dot_( need_dot ) ,
+      base_( base )
   {
   }
 
@@ -36,9 +39,21 @@ public:
   {
     return parser_;
   }
+  DotParser& dotParser()
+  {
+    return dotparser_;
+  }
+  DotParser const& dotParser() const
+  {
+    return dotparser_;
+  }
   bool needDot() const
   {
     return need_dot_;
+  }
+  unsigned int base() const
+  {
+    return base_;
   }
 
   template < typename I , typename S >
@@ -46,12 +61,12 @@ public:
   parse_attribute( I& begin , I const& end , S const& skipper ) const
   {
     I begin_ = begin;
-    if( auto integer = unsigned_integer<Base,T>( parser() ).parse_attribute( begin , end , skipper ) )
+    if( auto integer = unsigned_integer<T>( parser() , base_ ).parse_attribute( begin , end , skipper ) )
     {
       I begin_beforedot = begin;
-      if( one('.').parse( begin , end , skipper ) )
+      if( dotparser_.parse( begin , end , skipper ) )
       {
-        if( auto fract = fraction<Base,T>( parser() ).parse_attribute( begin , end , skipper ) )
+        if( auto fract = fraction<T>( parser() , base_ ).parse_attribute( begin , end , skipper ) )
         {
           return *integer + *fract;
         }
@@ -73,11 +88,12 @@ public:
   bool parser( I& begin , I const& end , S const& skipper ) const
   {
     I begin_ = begin;
-    if( unsigned_integer<Base,T>( parser() ).parse( begin , end , skipper ) )
+    if( unsigned_integer<T>( parser() , base_ ).parse( begin , end , skipper ) )
     {
       I begin_beforedot = begin;
-      if( one('.').parse( begin , end , skipper ) && 
-          fraction<Base,T>( parser() ).parse( begin , end , skipper ) )
+
+      if( dotparser_.parse( begin , end , skipper ) && 
+          fraction<T>( parser() , base_ ).parse( begin , end , skipper ) )
       {
         return true;
       }else
@@ -100,28 +116,28 @@ public:
 
 namespace ep {
 
-template < unsigned int Base=10 , typename T = float , typename DigitParser >
-constexpr rules::advanced::UnsignedFloating< Base , T , std::decay_t<DigitParser> >
-unsigned_floating( DigitParser&& digitparser , bool need_dot = true )
+template < typename T = float , typename DigitParser , typename DotParser >
+constexpr rules::advanced::UnsignedFloating< T , DigitParser , DotParser >
+unsigned_floating( DigitParser digitparser , DotParser dotparser , bool need_dot = true , unsigned int base=10 )
 {
-  return { static_cast< DigitParser&& >( digitparser ) , need_dot };
+  return { std::move(digitparser) , std::move(dotparser) , need_dot , base };
 }
 template < typename T = float >
 constexpr auto
-unsigned_floating()
+unsigned_floating( bool need_dot=true )
 {
-  return unsigned_floating<10,T>( digit );
+  return unsigned_floating<T>( digit , one('.') , need_dot );
 }
-constexpr auto ufloat = unsigned_floating<10,float>( digit );
-constexpr auto udouble = unsigned_floating<10,double>( digit );
-constexpr auto uldouble = unsigned_floating<10,long double>( digit );
+constexpr auto ufloat = unsigned_floating<float>();
+constexpr auto udouble = unsigned_floating<double>();
+constexpr auto uldouble = unsigned_floating<long double>();
 
 }
 
 namespace ep { namespace traits {
 
-template < unsigned int Base , typename T , typename P , typename I >
-struct attribute_of< rules::advanced::UnsignedFloating<Base,T,P> , I >
+template < typename T , typename P , typename D , typename I >
+struct attribute_of< rules::advanced::UnsignedFloating<T,P,D> , I >
 {
   using type = T;
 };

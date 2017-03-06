@@ -50,9 +50,6 @@ public:
     }
     return false;
   }
-
-  template < typename ... Ts >
-  constexpr auto operator ()( Ts&& ... args ) const;
 };
 
 }}}
@@ -67,18 +64,6 @@ until( P&& parser )
 }
 
 }
-
-namespace ep { namespace rules { namespace shell {
-
-template < typename P >
-template < typename ... Ts >
-constexpr auto 
-Until<P>::operator ()( Ts&& ... args ) const
-{
-  return until( parser_( static_cast<Ts&&>( args )... ) );
-}
-
-}}}
 
 namespace ep { namespace traits {
 

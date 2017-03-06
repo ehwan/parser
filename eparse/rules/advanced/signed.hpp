@@ -1,6 +1,5 @@
 #pragma once
 
-#include "signed_fwd.hpp"
 #include "unsigned_integer.hpp"
 #include "unsigned_floating.hpp"
 #include "signature.hpp"
@@ -97,8 +96,6 @@ signed_numeric( Parser&& parser )
 }
 
 constexpr auto int_ = signed_numeric( uint );
-template < unsigned int Base , typename T=unsigned int >
-constexpr auto int__ = signed_numeric( uint_<Base,std::make_unsigned_t<T>> );
 
 constexpr auto float_  = signed_numeric( ufloat );
 constexpr auto double_ = signed_numeric( udouble );

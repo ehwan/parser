@@ -1,5 +1,5 @@
 #pragma once
-#include "unsigned_integer_fwd.hpp"
+
 #include "../../core/expression.hpp"
 #include "../../core/optional.hpp"
 #include "../../traits/attribute_of_fwd.hpp"
@@ -12,16 +12,18 @@
 
 namespace ep { namespace rules { namespace advanced {
 
-template < unsigned int Base , typename T , typename Parser >
+template < typename T , typename Parser >
 class UnsignedInteger
-  : public core::expression< UnsignedInteger<Base,T,Parser> >
+  : public core::expression< UnsignedInteger<T,Parser> >
 {
 protected:
   Parser parser_;
+  unsigned int base_;
 
 public:
-  constexpr UnsignedInteger( Parser parser )
-    : parser_( std::move(parser) )
+  constexpr UnsignedInteger( Parser parser , unsigned int base )
+    : parser_( std::move(parser) ) ,
+      base_( base )
   {
   }
 
@@ -32,6 +34,10 @@ public:
   Parser const& parser() const
   {
     return parser_;
+  }
+  unsigned int base() const
+  {
+    return base_;
   }
 
   template < typename I , typename S >
@@ -44,7 +50,7 @@ public:
       T ret = static_cast<T>( *i );
       while( (i = parser().parse_attribute( begin , end , skipper )) )
       {
-        ret = ret*Base + *i;
+        ret = ret*base_ + *i;
       }
       return ret;
     }
@@ -71,23 +77,20 @@ public:
 
 namespace ep {
 
-template < unsigned int Base=10 , typename T = unsigned int , typename DigitParser >
-constexpr rules::advanced::UnsignedInteger< Base , T , std::decay_t<DigitParser> >
-unsigned_integer( DigitParser&& digitparser )
+template < typename T = unsigned int , typename DigitParser >
+constexpr rules::advanced::UnsignedInteger< T , std::decay_t<DigitParser> >
+unsigned_integer( DigitParser&& digitparser , unsigned int base=10 )
 {
-  return { static_cast< DigitParser&& >( digitparser ) };
+  return { static_cast< DigitParser&& >( digitparser ) , base };
 }
 constexpr auto uint = unsigned_integer( digit );
-
-template < unsigned int Base , typename T=unsigned int >
-constexpr auto uint_ = unsigned_integer<Base,T>( digit_<Base> );
 
 }
 
 namespace ep { namespace traits {
 
-template < unsigned int Base , typename T , typename P , typename I >
-struct attribute_of< rules::advanced::UnsignedInteger<Base,T,P> , I >
+template < typename T , typename P , typename I >
+struct attribute_of< rules::advanced::UnsignedInteger<T,P> , I >
 {
   using type = T;
 };

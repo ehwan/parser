@@ -28,7 +28,7 @@ public:
     if( begin != end )
     {
       const T i = *begin;
-      if( i >= begin_ && i < end_ )
+      if( i >= begin_ && i <= end_ )
       {
         ++begin;
         return T( i - begin_ );
@@ -59,11 +59,6 @@ public:
   {
     return end_;
   }
-
-  constexpr Range<T> operator ()( T size ) const
-  {
-    return { begin() , begin() + size - 1 };
-  }
 };
 
 }}}
@@ -79,8 +74,6 @@ range( T begin , T end )
 constexpr auto lower = range<unsigned int>( 'a' , 'z' );
 constexpr auto upper = range<unsigned int>( 'A' , 'Z' );
 constexpr auto digit = range<unsigned int>( '0' , '9' );
-constexpr auto bdigit = digit(2);
-constexpr auto odigit = digit(8);
 constexpr auto whitespace = range<unsigned int>(
   10 , 13
 );

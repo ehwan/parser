@@ -1,6 +1,5 @@
 #pragma once
 
-#include "signature_fwd.hpp"
 #include "../../core/expression.hpp"
 #include "../../core/optional.hpp"
 #include "../../traits/attribute_of_fwd.hpp"

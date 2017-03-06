@@ -1,6 +1,5 @@
 #pragma once
 
-#include "fraction_fwd.hpp"
 #include "../../core/expression.hpp"
 #include "../../core/optional.hpp"
 #include "../../traits/attribute_of_fwd.hpp"
@@ -11,16 +10,18 @@
 
 namespace ep { namespace rules { namespace advanced {
 
-template < unsigned int Base , typename T , typename Parser >
+template < typename T , typename Parser >
 class Fraction
-  : public core::expression< Fraction<Base,T,Parser> >
+  : public core::expression< Fraction<T,Parser> >
 {
 protected:
   Parser parser_;
+  T inv_base_;
 
 public:
-  constexpr Fraction( Parser parser )
-    : parser_( std::move(parser) )
+  constexpr Fraction( Parser parser , T inv_base )
+    : parser_( std::move(parser) ) ,
+      inv_base_( inv_base )
   {
   }
 
@@ -32,21 +33,24 @@ public:
   {
     return parser_;
   }
+  T invBase() const
+  {
+    return inv_base_;
+  }
 
   template < typename I , typename S >
   core::optional_t< T >
   parse_attribute( I& begin , I const& end , S const& skipper ) const
   {
     I begin_ = begin;
-    constexpr T inv = T( 1.0/Base );
     if( auto i = parser().parse_attribute( begin , end , skipper ) )
     {
-      T exp = inv;
+      T exp = inv_base_;
 
       T ret = exp * (*i);
       while( (i = parser().parse_attribute( begin , end , skipper )) )
       {
-        exp *= inv;
+        exp *= inv_base_;
         ret += exp * (*i);
       }
       return ret;
@@ -74,22 +78,22 @@ public:
 
 namespace ep {
 
-template < unsigned int Base=10 , typename T = float , typename DigitParser >
-constexpr rules::advanced::Fraction< Base , T , std::decay_t<DigitParser> >
-fraction( DigitParser&& digitparser )
+template < typename T = float , typename DigitParser >
+constexpr rules::advanced::Fraction< T , DigitParser >
+fraction( DigitParser digitparser , unsigned int base=10 )
 {
-  return { static_cast< DigitParser&& >( digitparser ) };
+  return { std::move(digitparser) , T(1)/base };
 }
-constexpr auto float_fraction = fraction<10,float>( digit );
-constexpr auto double_fraction = fraction<10,double>( digit );
-constexpr auto ldouble_fraction = fraction<10,long double>( digit );
+constexpr auto float_fraction = fraction<float>( digit );
+constexpr auto double_fraction = fraction<double>( digit );
+constexpr auto ldouble_fraction = fraction<long double>( digit );
 
 }
 
 namespace ep { namespace traits {
 
-template < unsigned int Base , typename T , typename Parser , typename I >
-struct attribute_of< rules::advanced::Fraction<Base,T,Parser> , I >
+template < typename T , typename Parser , typename I >
+struct attribute_of< rules::advanced::Fraction<T,Parser> , I >
 {
   using type = T;
 };

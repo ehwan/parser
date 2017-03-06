@@ -60,9 +60,6 @@ public:
   {
     return support::action_unused_parse_t()( begin , end , skipper , parser() , functor() );
   }
-
-  template < typename ... Ts >
-  constexpr auto operator ()( Ts&& ... args ) const;
 };
 
 }}}
@@ -78,19 +75,6 @@ action( Parser&& parser , Functor&& functor )
 }
 
 }
-
-namespace ep { namespace rules { namespace shell {
-
-template < typename P , typename F >
-template < typename ... Ts >
-constexpr auto 
-Action<P,F>::operator ()( Ts&& ... args ) const
-{
-  return action( parser_( static_cast<Ts&&>( args )... ) ,
-                 functor_ );
-}
-
-}}}
 
 namespace ep { namespace traits {
 
