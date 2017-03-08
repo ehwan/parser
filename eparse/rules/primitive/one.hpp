@@ -8,18 +8,17 @@
 
 namespace ep { namespace rules { namespace primitive {
 
-template < typename CharT >
 class One
-  : public core::expression< One<CharT> >
+  : public core::expression< One >
 {
 protected:
-  CharT data_;
+  unsigned int data_;
 public:
-  constexpr One( CharT data )
+  constexpr One( unsigned int data )
     : data_( data )
   {
   }
-  constexpr CharT data() const
+  constexpr unsigned int data() const
   {
     return data_;
   }
@@ -54,9 +53,8 @@ public:
 
 namespace ep {
 
-template < typename CharT >
-constexpr rules::primitive::One<CharT>
-one( CharT ch )
+constexpr rules::primitive::One
+one( unsigned int ch )
 {
   return { ch };
 }
@@ -74,8 +72,8 @@ constexpr auto under_score = one( '_' );
 
 namespace ep { namespace traits {
 
-template < typename CharT , typename I >
-struct attribute_of< rules::primitive::One<CharT> , I >
+template < typename I >
+struct attribute_of< rules::primitive::One , I >
 {
   using type = core::unused_type;
 };
