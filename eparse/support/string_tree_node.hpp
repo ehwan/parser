@@ -1,7 +1,6 @@
 #pragma once
 
 #include <iostream>
-#include <vector>
 #include <map>
 #include <string>
 #include <utility>
@@ -31,7 +30,6 @@ struct StringTreeNode
   using string_type = std::basic_string<CharT,CharTraits>;
   using data_type = core::optional_t<T>;
   using map_type = std::map<CharT,this_type,compare_t>;
-  //using map_type = std::vector<this_type>;
 
 
   string_type string_;
