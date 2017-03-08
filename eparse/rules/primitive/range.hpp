@@ -7,31 +7,37 @@
 
 namespace ep { namespace rules { namespace primitive {
 
-template < typename T >
 class Range
-  : public core::expression< Range<T> >
+  : public core::expression< Range >
 {
+public:
+  using value_type = unsigned int;
 protected:
-  T begin_ , end_;
+  value_type begin_ , end_;
   
 public:
-  constexpr Range( T begin , T end )
+  constexpr Range( value_type begin , value_type end )
     : begin_( begin ) ,
       end_( end )
   {
   }
 
+  bool check( unsigned int x ) const
+  {
+    return begin_ <= x && x <= end_;
+  }
+
   template < typename I >
-  core::optional_t<T>
+  core::optional_t<value_type>
   parse_attribute( I& begin , I const& end , core::nothing_t ) const
   {
     if( begin != end )
     {
-      const T i = *begin;
-      if( i >= begin_ && i <= end_ )
+      const value_type i = *begin;
+      if( check(i) )
       {
         ++begin;
-        return T( i - begin_ );
+        return value_type( i - begin_ );
       }
     }
     return core::none;
@@ -41,8 +47,7 @@ public:
   {
     if( begin != end )
     {
-      const T i = *begin;
-      if( i >= begin_ && i <= end_ )
+      if( check(*begin) )
       {
         ++begin;
         return true;
@@ -51,11 +56,11 @@ public:
     return false;
   }
 
-  constexpr T begin() const
+  constexpr value_type begin() const
   {
     return begin_;
   }
-  constexpr T end() const
+  constexpr value_type end() const
   {
     return end_;
   }
@@ -65,31 +70,30 @@ public:
 
 namespace ep {
 
-template < typename T = unsigned int >
-constexpr rules::primitive::Range<T>
-range( T begin , T end )
+constexpr rules::primitive::Range
+range( unsigned int begin , unsigned int end )
 {
   return { begin , end };
 }
-constexpr auto lower = range<unsigned int>( 'a' , 'z' );
-constexpr auto upper = range<unsigned int>( 'A' , 'Z' );
-constexpr auto digit = range<unsigned int>( '0' , '9' );
-constexpr auto whitespace = range<unsigned int>(
+constexpr auto lower = range( 'a' , 'z' );
+constexpr auto upper = range( 'A' , 'Z' );
+constexpr auto digit = range( '0' , '9' );
+constexpr auto whitespace = range(
   10 , 13
 );
-constexpr auto print = range<unsigned int>(
+constexpr auto print = range(
   32 , 126
 );
-constexpr auto graph = range<unsigned int>(
+constexpr auto graph = range(
   33 , 126
 );
 
 }
 
 namespace ep { namespace traits {
-  template < typename T , typename I >
-  struct attribute_of< rules::primitive::Range<T> , I >
+  template < typename I >
+  struct attribute_of< rules::primitive::Range , I >
   {
-    using type = T;
+    using type = rules::primitive::Range::value_type;
   };
 }}

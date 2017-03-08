@@ -42,7 +42,7 @@ namespace support {
 
 constexpr auto xdigit = or_( digit ,
     action( 
-      or_( range<unsigned int>('a','f') , range<unsigned int>('A','F') ) ,
+      or_( range('a','f') , range('A','F') ) ,
       support::add_t(10u)
     )
 );
