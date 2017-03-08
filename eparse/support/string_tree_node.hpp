@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <vector>
+#include <map>
 #include <string>
 #include <utility>
 #include "../core/optional.hpp"
@@ -9,76 +10,87 @@
 
 namespace ep { namespace support {
 
-template < typename CharT , typename T >
-struct PackedStringNode
+template < typename CharT , typename CharTraits , typename T >
+struct StringTreeNode
 {
-  using this_type = PackedStringNode<CharT,T>;
-  using map_type = std::vector<this_type>;
+  struct compare_t
+  {
+    bool operator()( CharT a , CharT b ) const
+    {
+      return CharTraits::lt( a , b );
+    }
+  };
+  struct equals_t
+  {
+    bool operator()( CharT a , CharT b ) const
+    {
+      return CharTraits::eq( a , b );
+    }
+  };
+  using this_type = StringTreeNode<CharT,CharTraits,T>;
+  using string_type = std::basic_string<CharT,CharTraits>;
   using data_type = core::optional_t<T>;
-  using string_type = std::basic_string<CharT>;
+  using map_type = std::map<CharT,this_type,compare_t>;
+  //using map_type = std::vector<this_type>;
+
 
   string_type string_;
   data_type data_;
-  map_type child_;
+  map_type children_;
 
-  PackedStringNode()
+  StringTreeNode()
   {
   }
-  PackedStringNode( string_type string , data_type data , map_type child )
+  StringTreeNode( string_type string , data_type data , map_type children )
     : string_( std::move(string) ) ,
       data_( std::move(data) ) ,
-      child_( std::move(child) )
+      children_( std::move(children) )
   {
   }
 
-  template < typename I , typename Equal >
-  bool check( I& begin , I const& end , Equal& isequal ) const
+  this_type const* find( CharT ch ) const
+  {
+    auto res = children_.find( ch );
+    if( res != children_.end() )
+    {
+      return &res->second;
+    }
+    return nullptr;
+  }
+  this_type* find( CharT ch )
+  {
+    auto res = children_.find( ch );
+    if( res != children_.end() )
+    {
+      return &res->second;
+    }
+    return nullptr;
+  }
+  template < typename I >
+  bool check( I& begin , I const& end ) const
   {
     ++begin;
-    return support::string_match( begin , end , string_.begin()+1 , string_.end() , string_.size()-1 , isequal );
-  }
-
-  template < typename Equal >
-  core::optional_t<typename map_type::const_iterator>
-  find( CharT ch , Equal& isequal ) const
-  {
-    for( auto i=child_.begin(); i!=child_.end(); ++i )
-    {
-      if( isequal( i->string_.front() , ch ) )
-      {
-        return i;
-      }
-    }
-    return core::none;
-  }
-  template < typename Equal >
-  core::optional_t<typename map_type::iterator>
-  find( CharT ch , Equal& isequal )
-  {
-    for( auto i=child_.begin(); i!=child_.end(); ++i )
-    {
-      if( isequal( i->string_.front() , ch ) )
-      {
-        return i;
-      }
-    }
-    return core::none;
+    if( string_.size() == 1 ){ return true; }
+    return support::string_match( begin , end , string_.begin()+1 , string_.end() , string_.size()-1 ,
+        equals_t() );
   }
 
   void separate( unsigned int end )
   {
     if( end >= string_.size() ){ return; }
-    map_type new_child = std::move( child_ );
-    child_.clear();
-    child_.emplace_back( string_.substr(end) , std::move(data_) , std::move(new_child) );
+    map_type new_children = std::move(children_);
+    children_.clear();
+    children_.emplace( 
+      string_[end] ,
+      this_type( string_.substr(end) , std::move(data_) , std::move(new_children) )
+    );
     string_.resize( end );
     string_.shrink_to_fit();
   }
 
-  template < typename Equal >
-  data_type& get_front( CharT const* str , unsigned int strsize , Equal& isequal )
+  data_type& get_front( CharT const* str , unsigned int strsize )
   {
-     //front must match
+    //front must match
     //if( strsize == 0 ){ return; }
 
     auto i = str;
@@ -99,46 +111,37 @@ struct PackedStringNode
       //              i
       if( si == string_.end() )
       {
-        return get_back( i , static_cast<unsigned int>( str + strsize - i ) ,
-            isequal );
+        return get_back( i , static_cast<unsigned int>( str + strsize - i ) );
       }
 
       //             i
       // string : **/******
       //          in/put
-      if( isequal( *i , *si ) == false )
+      if( CharTraits::eq( *i , *si ) == false )
       {
         const unsigned int dist = i - str;
         separate( dist );
-        return get_back( i , strsize - dist ,
-            isequal );
+        return children_.emplace( 
+          *i ,
+          this_type( string_type(i,strsize-dist) , core::none , map_type() )
+        ).first->second.data_;
       }
 
       ++i;
       ++si;
     }
   }
-  template < typename Equal >
-  data_type& get_back( CharT const* str , unsigned int strsize , Equal& isequal )
+  data_type& get_back( CharT const* str , unsigned int len )
   {
-    //if( strsize == 0 ){ return; }
-    if( auto res = find( *str , isequal ) )
+    if( auto findres = find( *str ) )
     {
-      return (*res)->get_front( str , strsize , isequal );
+      return findres->get_front( str , len );
     }else
     {
-      child_.emplace_back( string_type( str , strsize ) , core::none , map_type() );
-      return child_.back().data_;
-    }
-  }
-
-  void shrink_to_fit()
-  {
-    child_.shrink_to_fit();
-    string_.shrink_to_fit();
-    for( auto& i : child_ )
-    {
-      i.shrink_to_fit();
+      return children_.emplace( 
+        *str ,
+        this_type( string_type(str,len) , core::none , map_type() )
+      ).first->second.data_;
     }
   }
 
@@ -152,9 +155,9 @@ struct PackedStringNode
     {
       std::cout << string_ << " : " << (data_?"O":"X") << std::endl;
     }
-    for( auto& i : child_ )
+    for( auto& i : children_ )
     {
-      i.print( level + 1 );
+      i.second.print( level + 1 );
     }
   }
 };

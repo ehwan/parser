@@ -10,78 +10,69 @@
 
 namespace ep { namespace rules { namespace primitive {
 
-template < typename Crtp , typename CharT , typename T >
-class StringTreeBase
-  : public core::expression<Crtp>
+template < typename CharT , typename CharTraits , typename T >
+class StringTree
+  : public core::expression< StringTree<CharT,CharTraits,T> >
 {
-  using node_type = support::PackedStringNode<CharT,T>;
+  using node_type = support::StringTreeNode<CharT,CharTraits,T>;
+
 protected:
   node_type root_;
 
-  auto& _isequal()
-  {
-    return static_cast<Crtp*>(this)->isequal();
-  }
-  auto& _isequal() const
-  {
-    return static_cast<Crtp const*>(this)->isequal();
-  }
-
 public:
-  
-  void insert( CharT const* str , T val , unsigned int strsize=0 )
+  void insert( CharT const* str , unsigned int len , T value )
   {
-    root_.get_back( str , strsize==0?std::char_traits<CharT>::length(str):strsize , _isequal() ).emplace( std::move(val) );
+    root_.get_back( str , len ).emplace( std::move(value) );
   }
-  typename node_type::data_type& value( CharT const* str , unsigned int strsize=0 )
+  void insert( CharT const* str , T value )
   {
-    return root_.get_back( str , strsize==0?std::char_traits<CharT>::length(str):strsize , _isequal() );
+    root_.get_back( str , CharTraits::length(str) ).emplace( std::move(value) );
   }
-  typename node_type::data_type& operator []( CharT const* str )
+  typename node_type::data_type&
+  operator []( CharT const* str )
   {
-    return value( str );
+    return root_.get_back( str , CharTraits::length(str) );
   }
   void print() const
   {
     root_.print( -1 );
   }
-
-  void shrink_to_fit()
-  {
-    root_.shrink_to_fit();
-  }
-  
   template < typename I , typename S >
-  core::optional_t< T >
+  core::optional_t<T>
   parse_attribute( I& begin , I const& end , S const& skipper ) const
   {
     I begin_ = begin;
-    node_type const* node = &root_;
-    T const* saved = nullptr;
-    I savedit = begin_;
+    node_type const* current_node = &root_;
+    T const* last_succeed = nullptr;
+    I last_succeed_it = begin_;
     while(1)
     {
       if( begin != end )
       {
-        if( auto findres = node->find( *begin , _isequal() ) )
+        if( auto findres = current_node->find( *begin ) )
         {
-          node = &(**findres);
-          if( node->check( begin , end , _isequal() ) )
+          if( findres->check( begin , end ) )
           {
-            if( node->data_ )
+            current_node = findres;
+            if( findres->data_ )
             {
-              saved = &(*(node->data_));
-              savedit = begin;
+              last_succeed = &(*findres->data_);
+              last_succeed_it = begin;
             }
             continue;
           }
         }
-        if( savedit != begin_ )
-        {
-          begin = savedit;
-          return { *saved };
-        }
       }
+      goto failphase;
+    }
+
+failphase:
+    if( last_succeed )
+    {
+      begin = last_succeed_it;
+      return *last_succeed;
+    }else
+    {
       begin = begin_;
       return core::none;
     }
@@ -90,88 +81,38 @@ public:
   bool parse( I& begin , I const& end , S const& skipper ) const
   {
     I begin_ = begin;
-    node_type const* node = &root_;
-    I savedit = begin_;
+    node_type const* current_node = &root_;
+    I last_succeed_it = begin_;
     while(1)
     {
       if( begin != end )
       {
-        if( auto findres = node->find( *begin , _isequal() ) )
+        if( auto findres = current_node->find( *begin ) )
         {
-          node = &(**findres);
-          if( node->check( begin , end , _isequal() ) )
+          if( findres->check( begin , end ) )
           {
-            if( node->data_ )
+            current_node = findres;
+            if( findres->data )
             {
-              savedit = begin;
+              last_succeed_it = begin;
             }
             continue;
           }
         }
-        if( savedit != begin_ )
-        {
-          begin = savedit;
-          return true;
-        }
       }
+      goto failphase;
+    }
+
+failphase:
+    if( last_succeed_it != begin_ )
+    {
+      begin = last_succeed_it;
+      return true;
+    }else
+    {
       begin = begin_;
       return false;
     }
-  }
-};
-template < typename CharT , typename T , typename Equal >
-class StringTree
-  : public StringTreeBase< StringTree<CharT,T,Equal> , CharT , T >
-{
-protected:
-  Equal isequal_;
-
-public:
-  StringTree( Equal isequal )
-    : isequal_( std::move(isequal) )
-  {
-  }
-  StringTree()
-  {
-  }
-  Equal& isequal()
-  {
-    return isequal_;
-  }
-  Equal const& isequal() const
-  {
-    return isequal_;
-  }
-};
-template < typename CharT , typename T >
-class StringTree< CharT , T , std::function< bool(CharT,CharT) > >
-  : public StringTreeBase< StringTree<CharT,T,std::function<bool(CharT,CharT)>> , CharT , T >
-{
-  using function_type = std::function< bool(CharT,CharT) >;
-protected:
-  function_type isequal_;
-
-public:
-  StringTree( function_type isequal )
-    : isequal_( std::move(isequal) )
-  {
-  }
-  StringTree()
-    : isequal_( std::equal_to<CharT>() )
-  {
-  }
-  function_type& isequal()
-  {
-    return isequal_;
-  }
-  function_type const& isequal() const
-  {
-    return isequal_;
-  }
-  function_type& isequal( function_type rhs )
-  {
-    isequal_ = std::move(rhs);
-    return isequal_;
   }
 };
 
@@ -179,15 +120,15 @@ public:
 
 namespace ep {
 
-template < typename T , typename CharT = char , typename Filter=std::equal_to<CharT> >
-using string_tree = rules::primitive::StringTree< CharT , T , Filter >;
+template < typename T , typename CharT=char , typename CharTraits=std::char_traits<CharT> >
+using string_tree = rules::primitive::StringTree< CharT , CharTraits , T >;
 
 }
 
 namespace ep { namespace traits {
 
-template < typename C , typename T , typename F , typename I >
-struct attribute_of< rules::primitive::StringTree<C,T,F> , I >
+template < typename C , typename CT , typename T , typename I >
+struct attribute_of< rules::primitive::StringTree<C,CT,T> , I >
 {
   using type = T;
 };
