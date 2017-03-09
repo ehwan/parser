@@ -70,10 +70,10 @@ public:
 namespace ep {
 
 template < typename P >
-constexpr rules::shell::Debug< std::decay_t<P> >
-debug( P&& parser )
+constexpr rules::shell::Debug<P>
+debug( P parser )
 {
-  return { static_cast< P&& >( parser ) };
+  return { std::move(parser) };
 }
 
 }

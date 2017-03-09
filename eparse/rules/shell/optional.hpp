@@ -49,10 +49,10 @@ public:
 namespace ep {
 
 template < typename P >
-constexpr rules::shell::Optional< std::decay_t<P> >
-optional( P&& p )
+constexpr rules::shell::Optional<P>
+optional( P p )
 {
-  return { static_cast< P&& >( p ) };
+  return { std::move(p) };
 }
 
 }

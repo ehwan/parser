@@ -57,10 +57,10 @@ public:
 namespace ep {
 
 template < typename P >
-constexpr rules::shell::Until< std::decay_t<P> >
-until( P&& parser )
+constexpr rules::shell::Until<P>
+until( P parser )
 {
-  return { static_cast< P&& >( parser ) };
+  return { std::move(parser) };
 }
 
 }

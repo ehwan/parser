@@ -52,10 +52,10 @@ public:
 namespace ep {
 
 template < typename P >
-constexpr rules::shell::Unused< std::decay_t<P> >
-unused( P&& parser )
+constexpr rules::shell::Unused<P>
+unused( P parser )
 {
-  return { static_cast< P&& >( parser ) };
+  return { std::move(parser) };
 }
 
 }

@@ -1,9 +1,12 @@
 #pragma once
+
 #include "or_fwd.hpp"
 #include "../../core/expression.hpp"
 #include "../../core/optional.hpp"
 #include "../../core/attribute_of_fwd.hpp"
 #include "../../support/variant_merge.hpp"
+
+#include <utility>
 
 namespace ep { namespace rules { namespace shell {
 
@@ -76,25 +79,25 @@ public:
 namespace ep {
 
 template < typename A >
-constexpr std::decay_t<A>
-or_( A&& a )
+constexpr A
+or_( A a )
 {
-  return { static_cast< A&& >( a ) };
+  return { std::move(a) };
 }
 template < typename A , typename B >
-constexpr rules::shell::Or< std::decay_t<A> , std::decay_t<B> >
-or_( A&& a , B&& b )
+constexpr rules::shell::Or<A,B>
+or_( A a , B b )
 {
-  return { static_cast< A&& >( a ) ,
-           static_cast< B&& >( b ) };
+  return { std::move(a) ,
+           std::move(b) };
 }
 template < typename A , typename B , typename C , typename ... Ds >
 constexpr auto
-or_( A&& a , B&& b , C&& c , Ds&& ... ds )
+or_( A a , B b , C c , Ds ... ds )
 {
   return or_(
-      or_( static_cast< A&& >( a ) , static_cast< B&& >( b ) ) ,
-      static_cast< C&& >( c ) , static_cast< Ds&& >( ds )...
+      or_( std::move(a) , std::move(b) ) ,
+      std::move(c) , std::move(ds)...
   );
 }
 

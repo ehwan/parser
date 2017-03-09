@@ -135,11 +135,11 @@ parse_fail:
 };
 
 template < typename Parser , typename Sep , typename Range >
-constexpr Separator< std::decay_t<Parser> , std::decay_t<Sep> , Range >
-separator( Parser&& parser , Sep&& sep , Range const& range )
+constexpr Separator<Parser,Sep,Range>
+separator( Parser parser , Sep sep , Range const& range )
 {
-  return { static_cast< Parser&& >( parser ) ,
-           static_cast< Sep&& >( sep ) ,
+  return { std::move(parser) ,
+           std::move(sep) ,
            range };
 }
 
@@ -149,34 +149,34 @@ namespace ep {
 
 template < typename Parser , typename Sep >
 constexpr auto
-separator( Parser&& parser , Sep&& sep , unsigned int begin , unsigned int end )
+separator( Parser parser , Sep sep , unsigned int begin , unsigned int end )
 {
-  return rules::shell::separator( static_cast< Parser&& >( parser ) ,
-      static_cast< Sep&& >( sep ) ,
+  return rules::shell::separator( std::move(parser) ,
+      std::move(sep) ,
       support::range<unsigned int,unsigned int>( begin , end ) );
 }
 template < typename Parser , typename Sep >
 constexpr auto
-separator( Parser&& parser , Sep&& sep , unsigned int count )
+separator( Parser parser , Sep sep , unsigned int count )
 {
-  return rules::shell::separator( static_cast< Parser&& >( parser ) ,
-      static_cast< Sep&& >( sep ) ,
+  return rules::shell::separator( std::move(parser) ,
+      std::move(sep) ,
       support::range_one<unsigned int>( count ) );
 }
 template < typename Parser , typename Sep >
 constexpr auto
-separator( Parser&& parser , Sep&& sep )
+separator( Parser parser , Sep sep )
 {
-  return rules::shell::separator( static_cast< Parser&& >( parser ) ,
-      static_cast< Sep&& >( sep ) ,
+  return rules::shell::separator( std::move(parser) ,
+      std::move(sep) ,
       support::range< core::unused_type , core::unused_type >() );
 }
 template < typename Parser , typename Sep >
 constexpr auto
-separator_min( Parser&& parser , Sep&& sep , unsigned int min )
+separator_min( Parser parser , Sep sep , unsigned int min )
 {
-  return rules::shell::separator( static_cast< Parser&& >( parser ) ,
-      static_cast< Sep&& >( sep ) ,
+  return rules::shell::separator( std::move(parser) ,
+      std::move(sep) ,
       support::range< unsigned int , core::unused_type >( min , {} ) );
 }
 

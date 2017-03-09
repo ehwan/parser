@@ -140,20 +140,20 @@ public:
 namespace ep {
 
 template < typename A , typename B >
-constexpr rules::shell::If< std::decay_t<A> , std::decay_t<B> >
-if_( bool isA , A&& a , B&& b )
+constexpr rules::shell::If<A,B>
+if_( bool isA , A a , B b )
 {
-  return { static_cast< A&& >( a ) ,
-           static_cast< B&& >( b ) ,
+  return { std::move(a) ,
+           std::move(b) ,
            isA };
 }
 
 template < typename ... Ts >
-constexpr rules::shell::Switch< std::decay_t<Ts>... >
+constexpr rules::shell::Switch<Ts...>
 switch_( unsigned int index ,
-    Ts&&... ps )
+    Ts ... ps )
 {
-  return { index , static_cast<Ts&&>(ps)... };
+  return { index , std::move(ps)... };
 }
 
 }

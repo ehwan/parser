@@ -95,26 +95,25 @@ public:
 namespace ep {
 
 template < bool Skip , typename A >
-constexpr std::decay_t<A>
-sequence( A&& a )
+constexpr A
+sequence( A a )
 {
-  return static_cast< A&& >( a );
+  return std::move(a);
 }
 template < bool Skip , typename A , typename B >
-constexpr rules::shell::Sequence< std::decay_t<A> , std::decay_t<B> , Skip >
-sequence( A&& a , B&& b )
+constexpr rules::shell::Sequence<A,B,Skip>
+sequence( A a , B b )
 {
-  return { static_cast< A&& >( a ) ,
-           static_cast< B&& >( b ) };
+  return { std::move(a) ,
+           std::move(b) };
 }
 template < bool Skip , typename A , typename B , typename C , typename ... Ds >
 constexpr auto
-sequence( A&& a , B&& b , C&& c , Ds&& ... ds )
+sequence( A a , B b , C c , Ds ... ds )
 {
   return sequence<Skip>( 
-      sequence<Skip>( static_cast< A&& >( a ) , static_cast< B&& >( b ) ) ,
-      static_cast< C&& >( c ) ,
-      static_cast< Ds&& >( ds )...
+      sequence<Skip>( std::move(a) , std::move(b) ) ,
+      std::move(c) , std::move(ds)...
   );
 }
 

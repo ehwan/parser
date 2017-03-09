@@ -5,6 +5,8 @@
 #include "../../core/optional.hpp"
 #include "../../core/attribute_of_fwd.hpp"
 
+#include <utility>
+
 namespace ep { namespace rules { namespace shell {
 
 template < typename P >
@@ -47,10 +49,10 @@ public:
 namespace ep {
 
 template < typename P >
-constexpr rules::shell::ResultOf< std::decay_t<P> >
-result_of( P&& p )
+constexpr rules::shell::ResultOf<P>
+result_of( P p )
 {
-  return { static_cast< P&& >( p ) };
+  return { std::move(p) };
 }
 
 }

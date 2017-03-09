@@ -60,11 +60,11 @@ public:
 namespace ep {
 
 template < typename P , typename S >
-constexpr rules::shell::Skipper< std::decay_t<P> , std::decay_t<S> >
-skipper( P&& p , S&& s )
+constexpr rules::shell::Skipper<P,S>
+skipper( P p , S s )
 {
-  return { static_cast< P&& >( p ) ,
-           static_cast< S&& >( s ) };
+  return { std::move(p) ,
+           std::move(s) };
 }
 
 }

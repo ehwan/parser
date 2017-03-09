@@ -67,11 +67,10 @@ public:
 namespace ep {
 
 template < typename Parser , typename Functor >
-constexpr rules::shell::Action< std::decay_t<Parser> , std::decay_t<Functor> >
-action( Parser&& parser , Functor&& functor )
+constexpr rules::shell::Action<Parser,Functor>
+action( Parser parser , Functor functor )
 {
-  return { static_cast< Parser&& >( parser ) ,
-           static_cast< Functor&& >( functor ) };
+  return { std::move(parser) , std::move(functor) };
 }
 
 }

@@ -63,10 +63,10 @@ public:
 namespace ep {
 
 template < typename P >
-constexpr rules::shell::Bad< std::decay_t<P> >
-bad( P&& parser )
+constexpr rules::shell::Bad<P>
+bad( P parser )
 {
-  return { static_cast< P&& >( parser ) };
+  return { std::move(parser) };
 }
 
 }

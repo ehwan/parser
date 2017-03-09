@@ -5,6 +5,8 @@
 #include "../../core/optional.hpp"
 #include "../../core/attribute_of_fwd.hpp"
 
+#include <utility>
+
 namespace ep { namespace rules { namespace shell {
 
 template < typename P , typename E >
@@ -67,11 +69,11 @@ public:
 namespace ep {
 
 template < typename P , typename E >
-constexpr rules::shell::Except< std::decay_t<P> , std::decay_t<E> >
-except( P&& parser , E&& except )
+constexpr rules::shell::Except<P,E>
+except( P parser , E except )
 {
-  return { static_cast< P&& >( parser ) ,
-           static_cast< E&& >( except ) };
+  return { std::move(parser) ,
+           std::move(except) };
 }
 
 }

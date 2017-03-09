@@ -51,10 +51,10 @@ public:
 namespace ep {
 
 template < typename P >
-constexpr rules::shell::Capture< std::decay_t<P> >
-capture( P&& parser )
+constexpr rules::shell::Capture<P>
+capture( P parser )
 {
-  return { static_cast< P&& >( parser ) };
+  return { std::move(parser) };
 }
 
 }

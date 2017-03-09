@@ -105,10 +105,10 @@ public:
 };
 
 template < typename Parser , typename Range >
-constexpr Repeat< std::decay_t<Parser> , Range >
-repeat( Parser&& parser , Range const& range )
+constexpr Repeat<Parser,Range>
+repeat( Parser parser , Range const& range )
 {
-  return { static_cast< Parser&& >( parser ) ,
+  return { std::move(parser) ,
            range };
 }
 
@@ -118,43 +118,43 @@ namespace ep {
 
 template < typename Parser >
 constexpr auto
-repeat( Parser&& parser , unsigned int begin , unsigned int end )
+repeat( Parser parser , unsigned int begin , unsigned int end )
 {
-  return rules::shell::repeat( static_cast< Parser&& >( parser ) ,
+  return rules::shell::repeat( std::move(parser) ,
       support::range<unsigned int,unsigned int>( begin , end ) );
 }
 template < typename Parser >
 constexpr auto
-repeat( Parser&& parser , unsigned int count )
+repeat( Parser parser , unsigned int count )
 {
-  return rules::shell::repeat( static_cast< Parser&& >( parser ) ,
+  return rules::shell::repeat( std::move(parser) ,
       support::range_one<unsigned int>( count ) );
 }
 template < typename Parser >
 constexpr auto
-repeat( Parser&& parser )
+repeat( Parser parser )
 {
-  return rules::shell::repeat( static_cast< Parser&& >( parser ) ,
+  return rules::shell::repeat( std::move(parser) ,
       support::range< core::unused_type , core::unused_type >() );
 }
 template < typename Parser >
 constexpr auto
-repeat_min( Parser&& parser , unsigned int min )
+repeat_min( Parser parser , unsigned int min )
 {
-  return rules::shell::repeat( static_cast< Parser&& >( parser ) ,
+  return rules::shell::repeat( std::move(parser) ,
       support::range<unsigned int,core::unused_type>( min , {} ) );
 }
 template < typename Parser >
 constexpr auto
-plus( Parser&& parser )
+plus( Parser parser )
 {
-  return repeat_min( static_cast< Parser&& >( parser ) , 1 );
+  return repeat_min( std::move(parser) , 1 );
 }
 template < typename Parser >
 constexpr auto
-star( Parser&& parser )
+star( Parser parser )
 {
-  return rules::shell::repeat( static_cast< Parser&& >( parser ) ,
+  return rules::shell::repeat( std::move(parser) ,
       support::range<core::unused_type,core::unused_type>( {} , {} ) );
 }
 
