@@ -2,7 +2,7 @@
 
 #include "../../core/expression.hpp"
 #include "../../core/optional.hpp"
-#include "../../traits/attribute_of_fwd.hpp"
+#include "../../core/attribute_of_fwd.hpp"
 #include "../primitive/one.hpp"
 
 #include <type_traits>
@@ -93,7 +93,7 @@ Signature<T_,F_>::operator()( T&& true_parser , F&& false_parser ) const
 
 }}}
 
-namespace ep { namespace traits {
+namespace ep { namespace core {
 
 template < typename T , typename F , typename I >
 struct attribute_of< rules::advanced::Signature<T,F> , I >

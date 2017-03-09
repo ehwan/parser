@@ -5,7 +5,7 @@
 #include "signature.hpp"
 #include "../../core/expression.hpp"
 #include "../../core/optional.hpp"
-#include "../../traits/attribute_of_fwd.hpp"
+#include "../../core/attribute_of_fwd.hpp"
 
 #include <type_traits>
 #include <utility>
@@ -45,10 +45,10 @@ public:
   }
 
   template < typename I , typename S >
-  core::optional_t< std::make_signed_t< typename traits::attribute_of<P,I>::type > >
+  core::optional_t< std::make_signed_t< typename core::attribute_of<P,I>::type > >
   parse_attribute( I& begin , I const& end , S const& skipper ) const
   {
-    using ret_type = std::make_signed_t< typename traits::attribute_of<P,I>::type >;
+    using ret_type = std::make_signed_t< typename core::attribute_of<P,I>::type >;
     I begin_ = begin;
     if( auto sig = signature().parse_attribute( begin , end , skipper ) )
     {
@@ -104,7 +104,7 @@ constexpr auto ldouble = signed_numeric( uldouble );
 
 }
 
-namespace ep { namespace traits {
+namespace ep { namespace core {
 
 template < typename S , typename P , typename I >
 struct attribute_of< rules::advanced::SignedObject<S,P> , I >

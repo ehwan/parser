@@ -4,7 +4,7 @@
 #include "../../core/optional.hpp"
 #include "../../core/nothing.hpp"
 #include "../../core/unused_type.hpp"
-#include "../../traits/attribute_of_fwd.hpp"
+#include "../../core/attribute_of_fwd.hpp"
 
 #include <functional>
 
@@ -23,7 +23,7 @@ public:
   }
 
   template < typename I >
-  core::optional_t< typename traits::attribute_of<Custom<Compare> , I>::type >
+  core::optional_t< typename core::attribute_of<Custom<Compare> , I>::type >
   parse_attribute( I& begin , I const& end , core::nothing_t ) const
   {
     if( begin != end )
@@ -64,7 +64,7 @@ custom( Compare compare )
 
 }
 
-namespace ep { namespace traits {
+namespace ep { namespace core {
 
 template < typename Compare , typename I >
 struct attribute_of< rules::primitive::Custom<Compare> , I >

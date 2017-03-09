@@ -4,7 +4,7 @@
 #include "../../core/expression.hpp"
 #include "../../core/optional.hpp"
 #include "../../core/nothing.hpp"
-#include "../../traits/attribute_of_fwd.hpp"
+#include "../../core/attribute_of_fwd.hpp"
 #include "../../support/action_invoke.hpp"
 
 #include <utility>
@@ -46,7 +46,7 @@ public:
   }
 
   template < typename I , typename S >
-  core::optional_t< typename traits::attribute_of<this_type,I>::type >
+  core::optional_t< typename core::attribute_of<this_type,I>::type >
   parse_attribute( I& begin , I const& end , S const& skipper ) const
   {
     if( auto i = parser().parse_attribute( begin , end , skipper ) )
@@ -76,7 +76,7 @@ action( Parser&& parser , Functor&& functor )
 
 }
 
-namespace ep { namespace traits {
+namespace ep { namespace core {
 
 template < typename P , typename F , typename I >
 struct attribute_of< rules::shell::Action<P,F> , I >

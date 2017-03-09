@@ -4,7 +4,7 @@
 #include "../../core/expression.hpp"
 #include "../../core/optional.hpp"
 #include "../../core/skip.hpp"
-#include "../../traits/attribute_of_fwd.hpp"
+#include "../../core/attribute_of_fwd.hpp"
 #include "../../support/tuple_merge.hpp"
 
 #include <utility>
@@ -58,7 +58,7 @@ public:
   }
 
   template < typename I , typename S >
-  core::optional_t< typename traits::attribute_of<this_type,I>::type >
+  core::optional_t< typename core::attribute_of<this_type,I>::type >
   parse_attribute( I& begin , I const& end , S const& skipper ) const
   {
     I begin_ = begin;
@@ -120,7 +120,7 @@ sequence( A&& a , B&& b , C&& c , Ds&& ... ds )
 
 }
 
-namespace ep { namespace traits {
+namespace ep { namespace core {
 
 template < typename A , typename B , bool Skip , typename I >
 struct attribute_of< rules::shell::Sequence<A,B,Skip> , I >

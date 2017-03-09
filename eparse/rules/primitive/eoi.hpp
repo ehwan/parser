@@ -4,7 +4,7 @@
 #include "../../core/optional.hpp"
 #include "../../core/nothing.hpp"
 #include "../../core/unused_type.hpp"
-#include "../../traits/attribute_of_fwd.hpp"
+#include "../../core/attribute_of_fwd.hpp"
 
 namespace ep { namespace rules { namespace primitive {
 
@@ -37,7 +37,7 @@ constexpr rules::primitive::EOI eoi{};
 
 }
 
-namespace ep { namespace traits {
+namespace ep { namespace core {
 
 template < typename I >
 struct attribute_of< rules::primitive::EOI , I >

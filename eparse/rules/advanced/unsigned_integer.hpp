@@ -2,7 +2,7 @@
 
 #include "../../core/expression.hpp"
 #include "../../core/optional.hpp"
-#include "../../traits/attribute_of_fwd.hpp"
+#include "../../core/attribute_of_fwd.hpp"
 #include "../primitive/range.hpp"
 #include "../define.hpp"
 
@@ -88,7 +88,7 @@ constexpr auto uint16 = unsigned_integer( xdigit , 16 );
 
 }
 
-namespace ep { namespace traits {
+namespace ep { namespace core {
 
 template < typename T , typename P , typename I >
 struct attribute_of< rules::advanced::UnsignedInteger<T,P> , I >

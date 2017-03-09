@@ -4,7 +4,7 @@
 #include "../../core/expression.hpp"
 #include "../../core/optional.hpp"
 #include "../../core/unused_type.hpp"
-#include "../../traits/attribute_of_fwd.hpp"
+#include "../../core/attribute_of_fwd.hpp"
 #include "../../support/vector_shell.hpp"
 #include "../../core/skip.hpp"
 #include "../../support/range.hpp"
@@ -47,7 +47,7 @@ public:
   template < typename I >
   using vector_shell = 
     support::vector_shell<
-      typename traits::attribute_of<P,I>::type
+      typename core::attribute_of<P,I>::type
     >;
 
   template < typename I , typename S >
@@ -160,7 +160,7 @@ star( Parser&& parser )
 
 }
 
-namespace ep { namespace traits {
+namespace ep { namespace core {
 
 template < typename P , typename Range , typename I >
 struct attribute_of< rules::shell::Repeat<P,Range> , I >

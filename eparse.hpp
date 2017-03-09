@@ -5,7 +5,7 @@
 #include "eparse/core/unused_type.hpp"
 #include "eparse/core/variant.hpp"
 
-#include "eparse/traits/attribute_of.hpp"
+#include "eparse/core/attribute_of.hpp"
 
 #include "eparse/rules/primitive/any.hpp"
 #include "eparse/rules/primitive/always.hpp"
@@ -49,7 +49,7 @@
 namespace ep {
 
 template < typename Iterator , typename Parser , typename Skipper >
-core::optional_t< typename traits::attribute_of< Parser , Iterator >::type >
+core::optional_t< typename core::attribute_of< Parser , Iterator >::type >
 parse_attribute( Iterator& begin , Iterator const& end ,
     Parser const& parser , Skipper const& skipper )
 {
@@ -57,7 +57,7 @@ parse_attribute( Iterator& begin , Iterator const& end ,
   return parser.parse_attribute( begin , end , skipper );
 }
 template < typename Iterator , typename Parser , typename Skipper >
-core::optional_t< typename traits::attribute_of< Parser , Iterator >::type >
+core::optional_t< typename core::attribute_of< Parser , Iterator >::type >
 parse_attribute( Iterator const& begin , Iterator const& end ,
     Parser const& parser , Skipper const& skipper )
 {

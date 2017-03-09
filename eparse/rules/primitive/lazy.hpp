@@ -2,7 +2,7 @@
 
 #include "../../core/expression.hpp"
 #include "../../core/optional.hpp"
-#include "../../traits/attribute_of_fwd.hpp"
+#include "../../core/attribute_of_fwd.hpp"
 
 #include <type_traits>
 #include <tuple>
@@ -49,7 +49,7 @@ public:
   }
 
   template < typename I , typename S >
-  core::optional_t< typename traits::attribute_of<
+  core::optional_t< typename core::attribute_of<
     std::decay_t< typename std::result_of< Functor() >::type > , I
   >::type >
   parse_attribute( I& begin , I const& end , S const& skipper ) const
@@ -77,7 +77,7 @@ lazy( Functor functor )
 
 }
 
-namespace ep { namespace traits {
+namespace ep { namespace core {
 
 template < typename Functor , typename I >
 struct attribute_of< rules::primitive::Lazy<Functor> , I >

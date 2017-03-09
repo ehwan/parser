@@ -2,7 +2,7 @@
 
 #include "attribute_of_fwd.hpp"
 
-namespace ep { namespace traits {
+namespace ep { namespace core {
 
 template < typename Parser , typename Iterator >
 struct attribute_of

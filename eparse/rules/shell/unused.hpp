@@ -4,7 +4,7 @@
 #include "../../core/expression.hpp"
 #include "../../core/optional.hpp"
 #include "../../core/unused_type.hpp"
-#include "../../traits/attribute_of_fwd.hpp"
+#include "../../core/attribute_of_fwd.hpp"
 
 #include <utility>
 
@@ -60,7 +60,7 @@ unused( P&& parser )
 
 }
 
-namespace ep { namespace traits {
+namespace ep { namespace core {
 
 template < typename P , typename I >
 struct attribute_of< rules::shell::Unused<P> , I >

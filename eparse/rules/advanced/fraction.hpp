@@ -2,7 +2,7 @@
 
 #include "../../core/expression.hpp"
 #include "../../core/optional.hpp"
-#include "../../traits/attribute_of_fwd.hpp"
+#include "../../core/attribute_of_fwd.hpp"
 #include "../primitive/range.hpp"
 
 #include <type_traits>
@@ -90,7 +90,7 @@ constexpr auto ldouble_fraction = fraction<long double>( digit );
 
 }
 
-namespace ep { namespace traits {
+namespace ep { namespace core {
 
 template < typename T , typename Parser , typename I >
 struct attribute_of< rules::advanced::Fraction<T,Parser> , I >

@@ -3,7 +3,7 @@
 #include "separator_fwd.hpp"
 #include "../../core/expression.hpp"
 #include "../../core/optional.hpp"
-#include "../../traits/attribute_of_fwd.hpp"
+#include "../../core/attribute_of_fwd.hpp"
 #include "../../support/vector_shell.hpp"
 #include "../../core/skip.hpp"
 #include "../../support/range.hpp"
@@ -55,7 +55,7 @@ public:
   template < typename I >
   using vector_shell = 
     support::vector_shell<
-      typename traits::attribute_of<Parser,I>::type
+      typename core::attribute_of<Parser,I>::type
     >;
 
   template < typename I , typename S >
@@ -183,7 +183,7 @@ separator_min( Parser&& parser , Sep&& sep , unsigned int min )
 
 }
 
-namespace ep { namespace traits {
+namespace ep { namespace core {
 
 template < typename P , typename S , typename R , typename I >
 struct attribute_of< rules::shell::Separator<P,S,R> , I >

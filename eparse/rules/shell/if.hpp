@@ -3,7 +3,7 @@
 #include "if_fwd.hpp"
 #include "../../core/expression.hpp"
 #include "../../core/optional.hpp"
-#include "../../traits/attribute_of_fwd.hpp"
+#include "../../core/attribute_of_fwd.hpp"
 #include "../../support/variant_merge.hpp"
 #include <tuple>
 
@@ -29,7 +29,7 @@ public:
   }
 
   template < unsigned int ID , typename I , typename S >
-  core::optional_t< typename traits::attribute_of<this_type,I>::type >
+  core::optional_t< typename core::attribute_of<this_type,I>::type >
   parseattr( I& begin , I const& end , S const& skipper ,
       unsigned int id ) const
   {
@@ -55,7 +55,7 @@ public:
   }
 
   template < typename I , typename S >
-  core::optional_t< typename traits::attribute_of<this_type,I>::type >
+  core::optional_t< typename core::attribute_of<this_type,I>::type >
   parse_attribute( I& begin , I const& end , S const& skipper ) const
   {
     return parseattr<0>( begin , end , skipper , index_ );
@@ -111,7 +111,7 @@ public:
   }
 
   template < typename I , typename S >
-  core::optional_t< typename traits::attribute_of<this_type,I>::type >
+  core::optional_t< typename core::attribute_of<this_type,I>::type >
   parse_attribute( I& begin , I const& end , S const& skipper ) const
   {
     if( isA() )
@@ -158,7 +158,7 @@ switch_( unsigned int index ,
 
 }
 
-namespace ep { namespace traits {
+namespace ep { namespace core {
 
 template < typename A , typename I >
 struct attribute_of< rules::shell::Switch<A> , I >

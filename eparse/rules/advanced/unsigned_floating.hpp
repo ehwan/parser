@@ -4,7 +4,7 @@
 #include "unsigned_integer.hpp"
 #include "../../core/expression.hpp"
 #include "../../core/optional.hpp"
-#include "../../traits/attribute_of_fwd.hpp"
+#include "../../core/attribute_of_fwd.hpp"
 
 #include "../primitive/one.hpp"
 #include "../primitive/range.hpp"
@@ -134,7 +134,7 @@ constexpr auto uldouble = unsigned_floating<long double>();
 
 }
 
-namespace ep { namespace traits {
+namespace ep { namespace core {
 
 template < typename T , typename P , typename D , typename I >
 struct attribute_of< rules::advanced::UnsignedFloating<T,P,D> , I >

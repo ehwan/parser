@@ -3,7 +3,7 @@
 #include "../../core/expression.hpp"
 #include "../../core/optional.hpp"
 #include "../../core/nothing.hpp"
-#include "../../traits/attribute_of_fwd.hpp"
+#include "../../core/attribute_of_fwd.hpp"
 
 namespace ep { namespace rules { namespace primitive {
 
@@ -90,7 +90,7 @@ constexpr auto graph = range(
 
 }
 
-namespace ep { namespace traits {
+namespace ep { namespace core {
   template < typename I >
   struct attribute_of< rules::primitive::Range , I >
   {

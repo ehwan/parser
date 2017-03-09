@@ -3,7 +3,7 @@
 #include "debug_fwd.hpp"
 #include "../../core/expression.hpp"
 #include "../../core/optional.hpp"
-#include "../../traits/attribute_of_fwd.hpp"
+#include "../../core/attribute_of_fwd.hpp"
 
 #include <iostream>
 #include <utility>
@@ -31,7 +31,7 @@ public:
     return parser_;
   }
   template < typename I , typename S >
-  core::optional_t< typename traits::attribute_of<P,I>::type >
+  core::optional_t< typename core::attribute_of<P,I>::type >
   parse_attribute( I& begin , I const& end , S const& skipper ) const
   {
     I begin_ = begin;
@@ -78,7 +78,7 @@ debug( P&& parser )
 
 }
 
-namespace ep { namespace traits {
+namespace ep { namespace core {
 
 template < typename P , typename I >
 struct attribute_of< rules::shell::Debug<P> , I >

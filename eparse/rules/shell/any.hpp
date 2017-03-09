@@ -5,7 +5,7 @@
 #include "../../core/optional.hpp"
 #include "../../core/unused_type.hpp"
 #include "../../core/skip.hpp"
-#include "../../traits/attribute_of_fwd.hpp"
+#include "../../core/attribute_of_fwd.hpp"
 
 #include "../primitive/always.hpp"
 
@@ -284,7 +284,7 @@ public:
 }}}
 
 
-namespace ep { namespace traits {
+namespace ep { namespace core {
 
 template < typename Attr , typename I >
 struct attribute_of< rules::shell::AnyParser<Attr,I> , I >

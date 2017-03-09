@@ -4,7 +4,7 @@
 #include "../../core/optional.hpp"
 #include "../../core/nothing.hpp"
 #include "../../core/unused_type.hpp"
-#include "../../traits/attribute_of_fwd.hpp"
+#include "../../core/attribute_of_fwd.hpp"
 #include "../../support/string_match.hpp"
 
 #include <string>
@@ -83,7 +83,7 @@ string( CharT const* cstr )
 
 }
 
-namespace ep { namespace traits {
+namespace ep { namespace core {
 
 template < typename CharT , typename CharTraits , typename I >
 struct attribute_of< rules::primitive::String<CharT,CharTraits> , I >

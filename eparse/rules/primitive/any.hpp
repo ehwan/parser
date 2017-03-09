@@ -3,7 +3,7 @@
 #include "../../core/expression.hpp"
 #include "../../core/optional.hpp"
 #include "../../core/nothing.hpp"
-#include "../../traits/attribute_of_fwd.hpp"
+#include "../../core/attribute_of_fwd.hpp"
 
 #include <iterator>
 
@@ -44,7 +44,7 @@ constexpr rules::primitive::Any any{};
 
 }
 
-namespace ep { namespace traits {
+namespace ep { namespace core {
 
 template < typename I >
 struct attribute_of< rules::primitive::Any , I >

@@ -2,7 +2,7 @@
 #include "or_fwd.hpp"
 #include "../../core/expression.hpp"
 #include "../../core/optional.hpp"
-#include "../../traits/attribute_of_fwd.hpp"
+#include "../../core/attribute_of_fwd.hpp"
 #include "../../support/variant_merge.hpp"
 
 namespace ep { namespace rules { namespace shell {
@@ -42,10 +42,10 @@ public:
   }
 
   template < typename I , typename S >
-  core::optional_t< typename traits::attribute_of<this_type,I>::type >
+  core::optional_t< typename core::attribute_of<this_type,I>::type >
   parse_attribute( I& begin , I const& end , S const& skipper ) const
   {
-    using ret_type = typename traits::attribute_of<this_type,I>::type;
+    using ret_type = typename core::attribute_of<this_type,I>::type;
     if( auto i = parserA().parse_attribute( begin , end , skipper ) )
     {
       return ret_type( *i );
@@ -100,7 +100,7 @@ or_( A&& a , B&& b , C&& c , Ds&& ... ds )
 
 }
 
-namespace ep { namespace traits {
+namespace ep { namespace core {
 
 template < typename A , typename B , typename I >
 struct attribute_of< rules::shell::Or<A,B> , I >

@@ -3,7 +3,7 @@
 #include "../../core/expression.hpp"
 #include "../../core/optional.hpp"
 #include "../../core/nothing.hpp"
-#include "../../traits/attribute_of_fwd.hpp"
+#include "../../core/attribute_of_fwd.hpp"
 #include "../../support/endian.hpp"
 
 #include <cstdint>
@@ -83,7 +83,7 @@ constexpr auto qword_big = big_endian< std::uint64_t >( 8 );
 
 }
 
-namespace ep { namespace traits {
+namespace ep { namespace core {
 
 template < typename T , typename I >
 struct attribute_of< rules::primitive::Binary<T> , I >

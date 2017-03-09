@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../core/unused_type.hpp"
-#include "../traits/attribute_of_fwd.hpp"
+#include "../core/attribute_of_fwd.hpp"
 #include <tuple>
 #include <utility>
 #include <type_traits>
@@ -92,7 +92,7 @@ struct action_unused_parse_t
   bool operator ()( I& begin , I const& end , S const& skipper ,
       P const& parser , F const& functor ,
       typename std::enable_if<
-        std::is_same< core::unused_type , typename traits::attribute_of<P,I>::type >::value
+        std::is_same< core::unused_type , typename core::attribute_of<P,I>::type >::value
       >::type* = nullptr ) const
   {
     if( parser.parse( begin , end , skipper ) )
@@ -106,7 +106,7 @@ struct action_unused_parse_t
   bool operator ()( I& begin , I const& end , S const& skipper ,
       P const& parser , F const& functor ,
       typename std::enable_if<
-        std::is_same< core::unused_type , typename traits::attribute_of<P,I>::type >::value == false
+        std::is_same< core::unused_type , typename core::attribute_of<P,I>::type >::value == false
       >::type* = nullptr ,
       decltype( functor() )* = nullptr ) const
   {
@@ -121,7 +121,7 @@ struct action_unused_parse_t
   bool operator ()( I& begin , I const& end , S const& skipper ,
       P const& parser , F const& functor ,
       typename std::enable_if<
-        std::is_same< core::unused_type , typename traits::attribute_of<P,I>::type >::value == false
+        std::is_same< core::unused_type , typename core::attribute_of<P,I>::type >::value == false
       >::type* = nullptr ,
       decltype( 
         action_invoke_t()( functor , *parser.parse_attribute( begin , end , skipper ) )

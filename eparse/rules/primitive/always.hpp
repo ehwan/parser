@@ -4,7 +4,7 @@
 #include "../../core/unused_type.hpp"
 #include "../../core/optional.hpp"
 #include "../../core/nothing.hpp"
-#include "../../traits/attribute_of_fwd.hpp"
+#include "../../core/attribute_of_fwd.hpp"
 
 namespace ep { namespace rules { namespace primitive {
 
@@ -57,7 +57,7 @@ constexpr rules::primitive::Always false_ = always( false );
 
 }
 
-namespace ep { namespace traits {
+namespace ep { namespace core {
 
 template < typename I >
 struct attribute_of< rules::primitive::Always , I >

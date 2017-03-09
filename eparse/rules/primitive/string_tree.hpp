@@ -3,7 +3,7 @@
 #include "../../core/expression.hpp"
 #include "../../core/unused_type.hpp"
 #include "../../core/optional.hpp"
-#include "../../traits/attribute_of_fwd.hpp"
+#include "../../core/attribute_of_fwd.hpp"
 #include "../../support/string_tree_node.hpp"
 
 #include <functional>
@@ -125,7 +125,7 @@ using string_tree = rules::primitive::StringTree< CharT , CharTraits , T >;
 
 }
 
-namespace ep { namespace traits {
+namespace ep { namespace core {
 
 template < typename C , typename CT , typename T , typename I >
 struct attribute_of< rules::primitive::StringTree<C,CT,T> , I >

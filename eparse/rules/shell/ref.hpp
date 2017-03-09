@@ -3,7 +3,7 @@
 #include "ref_fwd.hpp"
 #include "../../core/expression.hpp"
 #include "../../core/optional.hpp"
-#include "../../traits/attribute_of_fwd.hpp"
+#include "../../core/attribute_of_fwd.hpp"
 
 #include <type_traits>
 
@@ -42,7 +42,7 @@ public:
   }
 
   template < typename I , typename S >
-  core::optional_t< typename traits::attribute_of<parser_type,I>::type >
+  core::optional_t< typename core::attribute_of<parser_type,I>::type >
   parse_attribute( I& begin , I const& end , S const& skipper ) const
   {
     return parser().parse_attribute( begin , end , skipper );
@@ -87,7 +87,7 @@ rules::shell::Ref<P const> ref( core::expression<P> const& p )
 
 }
 
-namespace ep { namespace traits {
+namespace ep { namespace core {
 
 template < typename P , typename I >
 struct attribute_of< rules::shell::Ref<P> , I >

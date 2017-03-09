@@ -3,7 +3,7 @@
 #include "optional_fwd.hpp"
 #include "../../core/expression.hpp"
 #include "../../core/optional.hpp"
-#include "../../traits/attribute_of_fwd.hpp"
+#include "../../core/attribute_of_fwd.hpp"
 
 #include <utility>
 
@@ -30,10 +30,10 @@ public:
     return parser_;
   }
   template < typename I , typename S >
-  core::optional_t< core::optional_t< typename traits::attribute_of<P,I>::type > >
+  core::optional_t< core::optional_t< typename core::attribute_of<P,I>::type > >
   parse_attribute( I& begin , I const& end , S const& skipper ) const
   {
-    using ret_type = core::optional_t< core::optional_t< typename traits::attribute_of<P,I>::type > >;
+    using ret_type = core::optional_t< core::optional_t< typename core::attribute_of<P,I>::type > >;
     return ret_type( parser().parse_attribute( begin , end , skipper ) );
   }
   template < typename I , typename S >
@@ -57,12 +57,12 @@ optional( P&& p )
 
 }
 
-namespace ep { namespace traits {
+namespace ep { namespace core {
 
 template < typename P , typename I >
 struct attribute_of< rules::shell::Optional<P> , I >
 {
-  using type = core::optional_t< typename traits::attribute_of<P,I>::type >;
+  using type = core::optional_t< typename attribute_of<P,I>::type >;
 };
 
 }}

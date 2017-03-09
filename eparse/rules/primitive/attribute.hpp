@@ -4,7 +4,7 @@
 #include "../../core/expression.hpp"
 #include "../../core/optional.hpp"
 #include "../../core/nothing.hpp"
-#include "../../traits/attribute_of_fwd.hpp"
+#include "../../core/attribute_of_fwd.hpp"
 
 #include <utility>
 
@@ -53,7 +53,7 @@ rules::primitive::Attribute<Attr> attribute( Attr attr )
 
 }
 
-namespace ep { namespace traits {
+namespace ep { namespace core {
 
 template < typename A , typename I >
 struct attribute_of< rules::primitive::Attribute<A> , I >

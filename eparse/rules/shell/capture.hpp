@@ -3,7 +3,7 @@
 #include "capture_fwd.hpp"
 #include "../../core/expression.hpp"
 #include "../../core/optional.hpp"
-#include "../../traits/attribute_of_fwd.hpp"
+#include "../../core/attribute_of_fwd.hpp"
 
 #include <utility>
 
@@ -59,7 +59,7 @@ capture( P&& parser )
 
 }
 
-namespace ep { namespace traits {
+namespace ep { namespace core {
 
 template < typename P , typename I >
 struct attribute_of< rules::shell::Capture<P> , I >

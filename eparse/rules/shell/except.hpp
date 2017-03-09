@@ -3,7 +3,7 @@
 #include "except_fwd.hpp"
 #include "../../core/expression.hpp"
 #include "../../core/optional.hpp"
-#include "../../traits/attribute_of_fwd.hpp"
+#include "../../core/attribute_of_fwd.hpp"
 
 namespace ep { namespace rules { namespace shell {
 
@@ -40,7 +40,7 @@ public:
   }
 
   template < typename I , typename S >
-  core::optional_t< typename traits::attribute_of<P,I>::type >
+  core::optional_t< typename core::attribute_of<P,I>::type >
   parse_attribute( I& begin , I const& end , S const& skipper ) const
   {
     I e_begin = begin;
@@ -76,7 +76,7 @@ except( P&& parser , E&& except )
 
 }
 
-namespace ep { namespace traits {
+namespace ep { namespace core {
 
 template < typename P , typename E , typename I >
 struct attribute_of< rules::shell::Except<P,E> , I >
