@@ -10,11 +10,7 @@ struct ci_char_traits
 {
   static CharT filter_char( CharT x )
   {
-    if( 'A' <= x && x <= 'Z' )
-    {
-      return x + 32;
-    }
-    return x;
+    return std::tolower(x);
   }
   static bool eq( CharT a , CharT b )
   {
@@ -28,8 +24,8 @@ struct ci_char_traits
   {
     while( n-- )
     {
-      const CharT a_ = filter_char(a);
-      const CharT b_ = filter_char(b);
+      const auto a_ = filter_char(a);
+      const auto b_ = filter_char(b);
 
       if( a_ < b_ )
       {
@@ -46,7 +42,7 @@ struct ci_char_traits
   }
   static CharT const* find( CharT const* s , size_t n , CharT a )
   {
-    const CharT a_ = filter_char(a);
+    const auto a_ = filter_char(a);
     while( n-- )
     {
       if( a_ == filter_char(*s) )
